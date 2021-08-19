@@ -7,7 +7,7 @@
   <parent>
     <artifactId>keycloak-parent</artifactId>
     <groupId>org.keycloak</groupId>
-    <version>12.0.1</version>
+    <version>15.0.1</version>
   </parent>
 
   <groupId>com.yfwj</groupId>
@@ -16,7 +16,7 @@
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <justauth.version>1.15.9</justauth.version>
+    <justauth.version>1.16.3</justauth.version>
   </properties>
 
   <dependencies>
@@ -64,6 +64,17 @@
 
   <build>
     <plugins>
+       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+            <archive>
+                <manifestEntries>
+                    <Dependencies>org.keycloak.keycloak-services</Dependencies>
+                </manifestEntries>
+            </archive>
+        </configuration>
+      </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
