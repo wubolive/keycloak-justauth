@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.zhyd.oauth.config.AuthConfig;
+import me.zhyd.oauth.exception.AuthException;
 import me.zhyd.oauth.model.AuthCallback;
 import me.zhyd.oauth.model.AuthResponse;
 import me.zhyd.oauth.model.AuthUser;
@@ -26,10 +27,7 @@ import org.keycloak.sessions.AuthenticationSessionModel;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.*;
 import java.lang.reflect.Constructor;
 
 /**
@@ -50,6 +48,7 @@ public class JustIdentityProvider extends AbstractOAuth2IdentityProvider<JustIde
     super(session, config);
     JustAuthKey justAuthKey = config.getJustAuthKey();
     this.AUTH_CONFIG = JustAuthKey.getAuthConfig(config);
+
     this.tClass = justAuthKey.getTClass();
   }
 
@@ -84,17 +83,19 @@ public class JustIdentityProvider extends AbstractOAuth2IdentityProvider<JustIde
     return new Endpoint(callback, realm, event);
   }
 
-
   protected class Endpoint {
     protected AuthenticationCallback callback;
     protected RealmModel realm;
     protected EventBuilder event;
+
     @Context
     protected KeycloakSession session;
     @Context
     protected ClientConnection clientConnection;
     @Context
     protected HttpHeaders headers;
+    @Context
+    protected UriInfo uriInfo;
 
 
     public Endpoint(AuthenticationCallback callback, RealmModel realm, EventBuilder event) {
@@ -104,19 +105,18 @@ public class JustIdentityProvider extends AbstractOAuth2IdentityProvider<JustIde
     }
 
     @GET
+    @SuppressWarnings("unchecked")
     public Response authResponse(@QueryParam("state") String state,
                                  @QueryParam("code") String authorizationCode,
                                  @QueryParam("error") String error) {
       AuthCallback authCallback = AuthCallback.builder().code(authorizationCode).state(state).build();
 
-      // 没有check 不通过
-      String redirectUri = "https://www.yfwj.com";
-      AuthRequest authRequest = getAuthRequest(AUTH_CONFIG, redirectUri);
+      AuthRequest authRequest = getAuthRequest(AUTH_CONFIG, uriInfo.getAbsolutePath().toString());
       AuthResponse<AuthUser> response = authRequest.login(authCallback);
-
 
       if (response.ok()) {
         AuthUser authUser = response.getData();
+
         JustIdentityProviderConfig config = JustIdentityProvider.this.getConfig();
         BrokeredIdentityContext federatedIdentity = new BrokeredIdentityContext(authUser.getUuid());
         authUser.getRawUserInfo().forEach((k, v) -> {
@@ -132,12 +132,14 @@ public class JustIdentityProvider extends AbstractOAuth2IdentityProvider<JustIde
             federatedIdentity.setToken(authUser.getToken().getAccessToken());
           }
         }
+        AuthenticationSessionModel authSession = this.callback.getAndVerifyAuthenticationSession(state);
 
         federatedIdentity.setUsername(authUser.getUuid());
         federatedIdentity.setBrokerUserId(authUser.getUuid());
         federatedIdentity.setIdpConfig(config);
         federatedIdentity.setIdp(JustIdentityProvider.this);
 //         federatedIdentity.setCode(state);
+        federatedIdentity.setAuthenticationSession(authSession);
 
         return this.callback.authenticated(federatedIdentity);
       } else {
