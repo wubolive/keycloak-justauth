@@ -134,13 +134,13 @@ public class JustIdentityProvider extends AbstractOAuth2IdentityProvider<JustIde
         }
         AuthenticationSessionModel authSession = this.callback.getAndVerifyAuthenticationSession(state);
 
-        federatedIdentity.setUsername(authUser.getUuid());
+        federatedIdentity.setUsername(authUser.getUsername());
         federatedIdentity.setBrokerUserId(authUser.getUuid());
         federatedIdentity.setIdpConfig(config);
         federatedIdentity.setIdp(JustIdentityProvider.this);
 //         federatedIdentity.setCode(state);
         federatedIdentity.setAuthenticationSession(authSession);
-
+        logger.info(String.format("raw userinfo:%s", authUser.getRawUserInfo().toString()));
         return this.callback.authenticated(federatedIdentity);
       } else {
         return this.errorIdentityProviderLogin("identityProviderUnexpectedErrorMessage");
