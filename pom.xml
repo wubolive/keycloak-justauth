@@ -51,30 +51,19 @@
     <dependency>
       <groupId>me.zhyd.oauth</groupId>
       <artifactId>JustAuth</artifactId>
-      <version>1.16.1</version>
+      <version>${justauth.version}</version>
     </dependency>
 
     <dependency>
       <groupId>cn.hutool</groupId>
       <artifactId>hutool-http</artifactId>
-      <version>5.3.9</version>
+      <version>5.7.9</version>
     </dependency>
 
   </dependencies>
 
   <build>
     <plugins>
-       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-            <archive>
-                <manifestEntries>
-                    <Dependencies>org.keycloak.keycloak-services</Dependencies>
-                </manifestEntries>
-            </archive>
-        </configuration>
-      </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
@@ -91,6 +80,11 @@
             <descriptorRefs>
               <descriptorRef>jar-with-dependencies</descriptorRef>
             </descriptorRefs>
+            <archive>
+              <manifestEntries>
+                <Dependencies>org.keycloak.keycloak-services</Dependencies>
+              </manifestEntries>
+            </archive>
           </configuration>
 
           <executions>
