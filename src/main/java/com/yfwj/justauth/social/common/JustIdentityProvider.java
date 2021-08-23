@@ -139,7 +139,7 @@ public class JustIdentityProvider extends AbstractOAuth2IdentityProvider<JustIde
                 }
                 AuthenticationSessionModel authSession = this.callback.getAndVerifyAuthenticationSession(state);
 
-                federatedIdentity.setUsername(authUser.getUsername());
+                federatedIdentity.setUsername(authUser.getNickname());
                 federatedIdentity.setBrokerUserId(authUser.getUuid());
                 federatedIdentity.setIdpConfig(config);
                 federatedIdentity.setIdp(JustIdentityProvider.this);
