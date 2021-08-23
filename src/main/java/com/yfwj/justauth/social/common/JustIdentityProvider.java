@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yfwj.justauth.social.QqIdentityProviderFactory;
 import me.zhyd.oauth.config.AuthConfig;
 import me.zhyd.oauth.exception.AuthException;
 import me.zhyd.oauth.model.AuthCallback;
@@ -22,6 +23,7 @@ import org.keycloak.events.EventBuilder;
 import org.keycloak.events.EventType;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
+import org.keycloak.models.UserModel;
 import org.keycloak.services.ErrorPage;
 import org.keycloak.sessions.AuthenticationSessionModel;
 
@@ -76,6 +78,11 @@ public class JustIdentityProvider extends AbstractOAuth2IdentityProvider<JustIde
   @Override
   protected String getDefaultScopes() {
     return DEFAULT_SCOPES;
+  }
+
+  @Override
+  public BrokeredIdentityContext getFederatedIdentity(String response) {
+    return super.getFederatedIdentity(response);
   }
 
   @Override
@@ -138,9 +145,15 @@ public class JustIdentityProvider extends AbstractOAuth2IdentityProvider<JustIde
         federatedIdentity.setBrokerUserId(authUser.getUuid());
         federatedIdentity.setIdpConfig(config);
         federatedIdentity.setIdp(JustIdentityProvider.this);
+        federatedIdentity.setUserAttribute("avatar_url", authUser.getAvatar());
+        federatedIdentity.setEmail(authUser.getEmail());
+        federatedIdentity.setUserAttribute("gender", authUser.getGender().getCode());
+        federatedIdentity.setUserAttribute("description", authUser.getRemark());
+        federatedIdentity.setUserAttribute("source", authUser.getSource());
+
 //         federatedIdentity.setCode(state);
         federatedIdentity.setAuthenticationSession(authSession);
-        logger.info(String.format("raw userinfo:%s", authUser.getRawUserInfo().toString()));
+
         return this.callback.authenticated(federatedIdentity);
       } else {
         return this.errorIdentityProviderLogin("identityProviderUnexpectedErrorMessage");
@@ -153,4 +166,5 @@ public class JustIdentityProvider extends AbstractOAuth2IdentityProvider<JustIde
       return ErrorPage.error(this.session, (AuthenticationSessionModel) null, Response.Status.BAD_GATEWAY, message);
     }
   }
+
 }
