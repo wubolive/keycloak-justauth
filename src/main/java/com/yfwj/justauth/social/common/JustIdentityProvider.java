@@ -145,11 +145,15 @@ public class JustIdentityProvider extends AbstractOAuth2IdentityProvider<JustIde
         federatedIdentity.setBrokerUserId(authUser.getUuid());
         federatedIdentity.setIdpConfig(config);
         federatedIdentity.setIdp(JustIdentityProvider.this);
+        federatedIdentity.setUserAttribute("nickname", authUser.getNickname());
         federatedIdentity.setUserAttribute("avatar_url", authUser.getAvatar());
         federatedIdentity.setEmail(authUser.getEmail());
         federatedIdentity.setUserAttribute("gender", authUser.getGender().getCode());
         federatedIdentity.setUserAttribute("description", authUser.getRemark());
         federatedIdentity.setUserAttribute("source", authUser.getSource());
+        federatedIdentity.setUserAttribute("location", authUser.getLocation());
+        federatedIdentity.setUserAttribute("home_page", authUser.getBlog());
+        federatedIdentity.setUserAttribute("company", authUser.getCompany());
 
 //         federatedIdentity.setCode(state);
         federatedIdentity.setAuthenticationSession(authSession);
