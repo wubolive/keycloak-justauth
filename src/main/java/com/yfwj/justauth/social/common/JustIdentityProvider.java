@@ -1,20 +1,13 @@
 package com.yfwj.justauth.social.common;
 
 
-import com.alibaba.fastjson.JSONObject;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yfwj.justauth.social.QqIdentityProviderFactory;
+import com.yfwj.justauth.models.AuthTotalUser;
 import me.zhyd.oauth.config.AuthConfig;
-import me.zhyd.oauth.exception.AuthException;
 import me.zhyd.oauth.model.AuthCallback;
 import me.zhyd.oauth.model.AuthResponse;
-import me.zhyd.oauth.model.AuthUser;
 import me.zhyd.oauth.request.AuthDefaultRequest;
 import me.zhyd.oauth.request.AuthRequest;
 import org.keycloak.broker.oidc.AbstractOAuth2IdentityProvider;
-import org.keycloak.broker.oidc.mappers.AbstractJsonUserAttributeMapper;
 import org.keycloak.broker.provider.AuthenticationRequest;
 import org.keycloak.broker.provider.BrokeredIdentityContext;
 import org.keycloak.broker.social.SocialIdentityProvider;
@@ -23,7 +16,6 @@ import org.keycloak.events.EventBuilder;
 import org.keycloak.events.EventType;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
-import org.keycloak.models.UserModel;
 import org.keycloak.services.ErrorPage;
 import org.keycloak.sessions.AuthenticationSessionModel;
 
@@ -117,10 +109,10 @@ public class JustIdentityProvider extends AbstractOAuth2IdentityProvider<JustIde
             AuthCallback authCallback = AuthCallback.builder().code(authorizationCode).state(state).build();
 
             AuthRequest authRequest = getAuthRequest(AUTH_CONFIG, uriInfo.getAbsolutePath().toString());
-            AuthResponse<AuthUser> response = authRequest.login(authCallback);
+            AuthResponse<AuthTotalUser> response = authRequest.login(authCallback);
 
             if (response.ok()) {
-                AuthUser authUser = response.getData();
+                AuthTotalUser authUser = response.getData();
 
                 JustIdentityProviderConfig config = JustIdentityProvider.this.getConfig();
                 BrokeredIdentityContext federatedIdentity = new BrokeredIdentityContext(authUser.getUuid());
