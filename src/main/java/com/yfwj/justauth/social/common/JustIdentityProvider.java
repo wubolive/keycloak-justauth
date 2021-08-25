@@ -1,10 +1,11 @@
 package com.yfwj.justauth.social.common;
 
 
-import com.yfwj.justauth.models.AuthTotalUser;
+import com.alibaba.fastjson.JSONObject;
 import me.zhyd.oauth.config.AuthConfig;
 import me.zhyd.oauth.model.AuthCallback;
 import me.zhyd.oauth.model.AuthResponse;
+import me.zhyd.oauth.model.AuthUser;
 import me.zhyd.oauth.request.AuthDefaultRequest;
 import me.zhyd.oauth.request.AuthRequest;
 import org.keycloak.broker.oidc.AbstractOAuth2IdentityProvider;
@@ -109,18 +110,19 @@ public class JustIdentityProvider extends AbstractOAuth2IdentityProvider<JustIde
             AuthCallback authCallback = AuthCallback.builder().code(authorizationCode).state(state).build();
 
             AuthRequest authRequest = getAuthRequest(AUTH_CONFIG, uriInfo.getAbsolutePath().toString());
-            AuthResponse<AuthTotalUser> response = authRequest.login(authCallback);
+            AuthResponse<AuthUser> response = authRequest.login(authCallback);
 
             if (response.ok()) {
-                AuthTotalUser authUser = response.getData();
+                AuthUser authUser = response.getData();
 
                 JustIdentityProviderConfig config = JustIdentityProvider.this.getConfig();
                 BrokeredIdentityContext federatedIdentity = new BrokeredIdentityContext(authUser.getUuid());
-//        authUser.getRawUserInfo().forEach((k, v) -> {
-//          String value = (v instanceof String) ? v.toString() : JSONObject.toJSONString(v);
-//          // v  不能过长
-//          federatedIdentity.setUserAttribute(config.getAlias() + "-" + k, value);
-//        });
+                // 全部信息
+                authUser.getRawUserInfo().forEach((k, v) -> {
+                    String value = (v instanceof String) ? v.toString() : JSONObject.toJSONString(v);
+                    // v  不能过长
+                    federatedIdentity.setUserAttribute(config.getAlias() + "-" + k, value.substring(0, 255));
+                });
 
                 if (getConfig().isStoreToken()) {
                     // make sure that token wasn't already set by getFederatedIdentity();
@@ -145,7 +147,6 @@ public class JustIdentityProvider extends AbstractOAuth2IdentityProvider<JustIde
                 federatedIdentity.setUserAttribute("home_page", authUser.getBlog());
                 federatedIdentity.setUserAttribute("company", authUser.getCompany());
 
-//         federatedIdentity.setCode(state);
                 federatedIdentity.setAuthenticationSession(authSession);
 
                 return this.callback.authenticated(federatedIdentity);
