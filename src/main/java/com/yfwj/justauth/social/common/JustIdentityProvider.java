@@ -120,8 +120,8 @@ public class JustIdentityProvider extends AbstractOAuth2IdentityProvider<JustIde
                 // 全部信息
                 authUser.getRawUserInfo().forEach((k, v) -> {
                     String value = (v instanceof String) ? v.toString() : JSONObject.toJSONString(v);
-                    // v  不能过长
-                    federatedIdentity.setUserAttribute(config.getAlias() + "-" + k, value.substring(0, 255));
+                    // v 可以很长
+                    federatedIdentity.setUserAttribute(config.getAlias() + "-" + k, value);
                 });
 
                 if (getConfig().isStoreToken()) {
