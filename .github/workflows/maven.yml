@@ -164,7 +164,7 @@ jobs:
                 g.write(f'KEYCLOAK_VERSION={keycloak_version}\n')
                 g.write(f'JUSTAUTH_VERSION={justauth_version}\n')
                 g.write(f'HUTOOL_VERSION={hutool_version}\n')
-                g.write(f'artifact_name=Keycloak-justauth_{keycloak_version}_{justauth_version}\n')
+                g.write(f'artifact_name=Keycloak-Justauth_{keycloak_version}_{justauth_version}\n')
               print('Gen version success')
             else:
               print('Get latest version error')
