@@ -47,7 +47,7 @@ jobs:
             res = requests.get(f"https://repo1.maven.org/maven2/{group.replace('.', '/')}/{artifact}/maven-metadata.xml")
             return re.findall(r'<latest>(.*?)</latest>', res.text)[0]
 
-          def gen_pom(keycloak_version, justauth_version, hutool_version):
+          def gen_pom(keycloak_version, justauth_version, hutool_version, alipay_sdk_version):
             raw = f"""<?xml version="1.0" encoding="UTF-8"?>
           <project xmlns="http://maven.apache.org/POM/4.0.0"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -101,6 +101,13 @@ jobs:
                 <artifactId>JustAuth</artifactId>
                 <version>{justauth_version}</version>
               </dependency>
+
+              <dependency>
+                  <groupId>com.alipay.sdk</groupId>
+                  <artifactId>alipay-sdk-java</artifactId>
+                  <version>{alipay_sdk_version}</version>
+              </dependency>
+
               <dependency>
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-http</artifactId>
@@ -156,15 +163,17 @@ jobs:
             if justauth_version == 'latest':
               justauth_version = check_maven_latest("me.zhyd.oauth", "JustAuth")
             hutool_version = check_maven_latest("cn.hutool", "hutool-http")
+            alipay_sdk_version = check_maven_latest("com.alipay.sdk", "alipay-sdk-java")
             if keycloak_version and keycloak_version != 'latest' and justauth_version and justauth_version != 'latest' and hutool_version and hutool_version != 'latest':
-              print(f"Keycloak: {keycloak_version}\nJustauth: {justauth_version}\nHutool: {hutool_version}")
-              pom = gen_pom(keycloak_version, justauth_version, hutool_version)
+              print(f"Keycloak: {keycloak_version}\nJustauth: {justauth_version}\nHutool: {hutool_version}\nAlipaySDK: {alipay_sdk_version}")
+              pom = gen_pom(keycloak_version, justauth_version, hutool_version, alipay_sdk_version)
               open('pom.xml', 'w').write(pom)
               with open(os.environ['GITHUB_ENV'], 'a') as g:
                 g.write(f'KEYCLOAK_VERSION={keycloak_version}\n')
                 g.write(f'JUSTAUTH_VERSION={justauth_version}\n')
                 g.write(f'HUTOOL_VERSION={hutool_version}\n')
-                g.write(f'artifact_name=Keycloak-Justauth_{keycloak_version}_{justauth_version}\n')
+                g.write(f'ALIPAY_SDK_VERSION={alipay_sdk_version}\n')
+                g.write(f'artifact_name=Keycloak-Justauth_{keycloak_version}_{justauth_version}_{alipay_sdk_version}\n')
               print('Gen version success')
             else:
               print('Get latest version error')
@@ -184,7 +193,7 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         token: "${{ secrets.GITHUB_TOKEN }}"
-        body: "```\nKeycloak Version: ${{ env.KEYCLOAK_VERSION }}\nJustauth Version: ${{ env.JUSTAUTH_VERSION }}\nHutool Version: ${{ env.HUTOOL_VERSION }}\n```"
+        body: "```\nKeycloak Version: ${{ env.KEYCLOAK_VERSION }}\nJustauth Version: ${{ env.JUSTAUTH_VERSION }}\nHutool Version: ${{ env.HUTOOL_VERSION }}\nAlipaySDK Version: ${{ env.ALIPAY_SDK_VERSION }}\n```"
         tag_name: ${{ env.KEYCLOAK_VERSION }}
         files: target/*.jar
         prerelease: ${{ github.event.inputs.prerelease }}
