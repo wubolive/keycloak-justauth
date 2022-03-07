@@ -138,7 +138,7 @@ jobs:
               </plugins>
             </build>
           </project>"""
-          return raw
+            return raw
 
           if __name__ == '__main__':
             keycloak_version = "${{ github.event.inputs.keycloak }}"
