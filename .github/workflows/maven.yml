@@ -201,6 +201,6 @@ jobs:
           keycloak_version=${{ env.KEYCLOAK_VERSION }}
         tags: |
           ztelliot/keycloak-justauth:latest
-          ztelliot/keycloak-justauth:${{ env.JUSTAUTH_VERSION }}
+          ztelliot/keycloak-justauth:${{ env.KEYCLOAK_VERSION }}
           ghcr.io/ztelliot/keycloak-justauth:latest
-          ghcr.io/ztelliot/keycloak-justauth:${{ env.JUSTAUTH_VERSION }}
+          ghcr.io/ztelliot/keycloak-justauth:${{ env.KEYCLOAK_VERSION }}
