@@ -141,8 +141,8 @@ jobs:
             return raw
 
           if __name__ == '__main__':
-            keycloak_version = "${{ github.event.inputs.keycloak }}"
-            justauth_version = "${{ github.event.inputs.justauth }}"
+            keycloak_version = "${{ github.event.inputs.keycloak }}" or 'latest'
+            justauth_version = "${{ github.event.inputs.justauth }}" or 'latest'
             if keycloak_version == 'latest':
               keycloak_version = check_maven_latest("org.keycloak", "keycloak-parent")
             if justauth_version == 'latest':
@@ -198,7 +198,7 @@ jobs:
         context: .
         push: true
         build-args: |
-          keycloak_version=${{ env.JUSTAUTH_VERSION }}
+          keycloak_version=${{ env.KEYCLOAK_VERSION }}
         tags: |
           ztelliot/keycloak-justauth:latest
           ztelliot/keycloak-justauth:${{ env.JUSTAUTH_VERSION }}
