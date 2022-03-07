@@ -2,6 +2,8 @@ ARG keycloak_version=16.1.1
 
 FROM quay.io/keycloak/keycloak:${keycloak_version}
 
+ARG keycloak_version=16.1.1
+
 ## copy temp
 COPY temp/* /opt/jboss/keycloak/themes/base/admin/resources/partials/
 ## copy icon
