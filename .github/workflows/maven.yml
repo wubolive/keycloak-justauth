@@ -20,6 +20,14 @@ on:
         description: "Justauth version"
         required: true
         default: "latest"
+      prerelease:
+        description: "Prerelease"
+        required: true
+        default: true
+        type: choice
+        options:
+        - true
+        - false
 
 jobs:
   build:
@@ -179,7 +187,7 @@ jobs:
         body: "```\nKeycloak Version: ${{ env.KEYCLOAK_VERSION }}\nJustauth Version: ${{ env.JUSTAUTH_VERSION }}\nHutool Version: ${{ env.HUTOOL_VERSION }}\n```"
         tag_name: ${{ env.KEYCLOAK_VERSION }}
         files: target/*.jar
-        prerelease: false
+        prerelease: ${{ github.event.inputs.prerelease }}
         fail_on_unmatched_files: true
     - name: Log in to Docker Hub
       uses: docker/login-action@v1
