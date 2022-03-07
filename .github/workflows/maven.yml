@@ -208,7 +208,16 @@ jobs:
         build-args: |
           keycloak_version=${{ env.KEYCLOAK_VERSION }}
         tags: |
-          ztelliot/keycloak-justauth:latest
           ztelliot/keycloak-justauth:${{ env.KEYCLOAK_VERSION }}
-          ghcr.io/ztelliot/keycloak-justauth:latest
           ghcr.io/ztelliot/keycloak-justauth:${{ env.KEYCLOAK_VERSION }}
+    - name: Build and Push Docker images as Latest
+      uses: docker/build-push-action@v2
+      if: ${{ github.event.inputs.prerelease != true }}
+      with:
+        context: .
+        push: true
+        build-args: |
+          keycloak_version=${{ env.KEYCLOAK_VERSION }}
+        tags: |
+          ztelliot/keycloak-justauth:latest
+          ghcr.io/ztelliot/keycloak-justauth:latest
