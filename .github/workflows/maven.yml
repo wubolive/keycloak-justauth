@@ -176,7 +176,7 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         token: "${{ secrets.GITHUB_TOKEN }}"
-        body: "```Keycloak Version: ${{ env.KEYCLOAK_VERSION }}\nJustauth Version: ${{ env.JUSTAUTH_VERSION }}\nHutool Version: ${{ env.HUTOOL_VERSION }}```"
+        body: "```\nKeycloak Version: ${{ env.KEYCLOAK_VERSION }}\nJustauth Version: ${{ env.JUSTAUTH_VERSION }}\nHutool Version: ${{ env.HUTOOL_VERSION }}\n```"
         tag_name: ${{ env.KEYCLOAK_VERSION }}
         files: target/*.jar
         prerelease: false
