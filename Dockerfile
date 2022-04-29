@@ -1,4 +1,4 @@
-FROM  quay.io/keycloak/keycloak:12.0.1
+FROM  quay.io/keycloak/keycloak:16.1.0
 
 ## copy temp
 COPY  temp/* /opt/jboss/keycloak/themes/base/admin/resources/partials/
