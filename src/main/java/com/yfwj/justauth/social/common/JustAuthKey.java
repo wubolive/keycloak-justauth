@@ -32,6 +32,8 @@ public enum JustAuthKey {
     AuthWeiboScope.STATUSES_TO_ME_READ.getScope()
   )),
 
+  JD("jd", "京东", AuthJdRequest.class),
+
   CODEING("coding", "coding", AuthCodingRequest.class, Arrays.asList(
     AuthCodingScope.USER.getScope(),
     AuthCodingScope.USER_EMAIL.getScope(),
