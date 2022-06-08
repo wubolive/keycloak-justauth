@@ -66,6 +66,26 @@
         <version>3.7.4.ALL</version>
     </dependency>
 
+  	<dependency>
+		    <groupId>org.keycloak</groupId>
+		    <artifactId>keycloak-server-spi-private</artifactId>
+		    <version>16.1.0</version>
+		    <scope>provided</scope>
+		</dependency>
+     <!-- https://mvnrepository.com/artifact/org.keycloak/keycloak-services -->
+		<dependency>
+		    <groupId>org.keycloak</groupId>
+		    <artifactId>keycloak-services</artifactId>
+		    <version>16.1.0</version>
+		    <scope>provided</scope>
+		</dependency>
+		<dependency>
+		    <groupId>org.keycloak</groupId>
+		    <artifactId>keycloak-server-spi</artifactId>
+		    <version>16.1.0</version>
+		    <scope>provided</scope>
+		</dependency>
+
   </dependencies>
 
   <build>
